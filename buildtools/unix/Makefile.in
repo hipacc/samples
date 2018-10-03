@@ -31,7 +31,7 @@ endif
 
 # Set compiler options
 OS           := $(shell uname)
-CXX_FLAGS     = -std=c++11 -O2
+CXX_FLAGS     = -std=c++11 -O2 -mavx2 -fopenmp
 CXX_INCLUDE   = -I ../../common \
                 -I $(HIPACC_PATH)/include
 CXX_LIB_DIR   = -L $(HIPACC_PATH)/lib
@@ -46,7 +46,7 @@ OCL_LINK      = $(CXX_LINK) -lOpenCL
 endif
 
 ifdef NVCC
-NVCC_FLAGS    = $(CXX_FLAGS) -x cu
+NVCC_FLAGS    = -std=c++11 -O2 -x cu
 NVCC_INCLUDE  = $(CXX_INCLUDE)
 NVCC_LIB_DIR  = $(CXX_LIB_DIR)
 ifeq ($(OS),Darwin)
@@ -62,7 +62,9 @@ HIPACC_FLAGS   = -std=c++11 -nostdinc++
 HIPACC_INCLUDE = -I ../../common \
                  -I $(HIPACC_PATH)/include/dsl \
                  -I $(HIPACC_PATH)/include/c++/v1 \
-                 -I $(HIPACC_PATH)/include/clang
+                 -I $(HIPACC_PATH)/include/clang \
+                 -I /usr/include \
+                 -I /usr/include/x86_64-linux-gnu
 HIPACC_OPTS    = -emit-$(1) \
                  $(shell if [ -f $(1).conf ]; then \
                            cat $(1).conf | xargs; \
@@ -109,7 +111,7 @@ endif
 
 # Run Hipacc
 main_%.cc: src/main.cpp
-	$(HIPACC) $(HIPACC_FLAGS) $(call HIPACC_OPTS,$*) $(HIPACC_INCLUDE) $(CURDIR)/$< -o $@
+	$(HIPACC) $(HIPACC_FLAGS) $(call HIPACC_OPTS,$*) -o $@ $(HIPACC_INCLUDE) $(CURDIR)/$<
 
 # Build CPU
 main_cpu: $$@.cc
