@@ -1,0 +1,19 @@
+# configure build tools
+configure_file(buildtools/unix/Makefile.in ${CMAKE_BINARY_DIR}/samples/buildtools/unix/Makefile)
+
+# install samples
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/samples/samples DESTINATION . COMPONENT samples)
+
+# deploy build tool for samples
+file(GLOB SAMPLE_DIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/samples/[0-9]*/*)
+foreach(SAMPLE_DIR IN LISTS SAMPLE_DIRS)
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${SAMPLE_DIR})
+        if(UNIX)
+            install(FILES ${CMAKE_BINARY_DIR}/samples/buildtools/unix/Makefile DESTINATION ${SAMPLE_DIR} COMPONENT samples)
+        elseif(WIN32)
+            file(GLOB NMAKE_FILES ${CMAKE_SOURCE_DIR}/samples/buildtools/nmake/*)
+            file(GLOB VS2015_FILES ${CMAKE_SOURCE_DIR}/samples/buildtools/vs2015/*)
+            install(FILES ${NMAKE_FILES} ${VS2015_FILES} DESTINATION ${SAMPLE_DIR} COMPONENT samples)
+        endif()
+    endif()
+endforeach()
