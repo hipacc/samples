@@ -58,13 +58,7 @@ OCL_LIB_DIR  += -L $(CUDA_PATH)/lib64
 endif
 endif
 
-HIPACC_FLAGS   = -std=c++11 -nostdinc++
-HIPACC_INCLUDE = -I ../../common \
-                 -I $(HIPACC_PATH)/include/dsl \
-                 -I $(HIPACC_PATH)/include/c++/v1 \
-                 -I $(HIPACC_PATH)/include/clang \
-                 -I /usr/include \
-                 -I /usr/include/x86_64-linux-gnu
+HIPACC_INCLUDE = -I ../../common
 HIPACC_OPTS    = -emit-$(1) \
                  $(shell if [ -f $(1).conf ]; then \
                            cat $(1).conf | xargs; \
@@ -111,7 +105,7 @@ endif
 
 # Run Hipacc
 main_%.cc: src/main.cpp
-	$(HIPACC) $(HIPACC_FLAGS) $(call HIPACC_OPTS,$*) -o $@ $(HIPACC_INCLUDE) $(CURDIR)/$<
+	$(HIPACC) $(call HIPACC_OPTS,$*) -o $@ $(HIPACC_INCLUDE) $(CURDIR)/$<
 
 # Build CPU
 main_cpu: $$@.cc
