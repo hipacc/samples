@@ -18,6 +18,11 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)_cpu.cc</Outputs>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\common\config\cpu.conf">
+      <FileType>Document</FileType>
+    </Media>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F06CB286-FC65-454B-B42B-3E3CE6A171E6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -75,7 +80,18 @@
       <AdditionalDependencies>hipaccRuntime.lib;%(OpenCVLib);kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuild>
-      <Command>"%HIPACC_PATH%/bin/hipacc.exe" -emit-cpu -omp off -vectorize off -instruction-set sse4.2 -o "%(Filename)_cpu.cc" -I ../../common "%(FullPath)"</Command>
+      <Command>rem
+rem Load parameter configuration from file
+rem
+if exist cpu.conf (set CONFIG_FILE=cpu.conf) else (set CONFIG_FILE=..\..\common\config\cpu.conf)
+setlocal enabledelayedexpansion
+set HIPACC_OPTS=
+for /f "delims=" %%x in (%CONFIG_FILE%) do set HIPACC_OPTS=!HIPACC_OPTS! %%x
+
+rem
+rem Run Hipacc compiler
+rem
+"%HIPACC_PATH%/bin/hipacc.exe" -emit-cpu %HIPACC_OPTS% -o "%(Filename)_cpu.cc" -I ../../common "%(FullPath)"</Command>
     </CustomBuild>
     <CustomBuild>
       <Message>Run Hipacc Compiler</Message>
@@ -107,7 +123,18 @@
       <AdditionalDependencies>hipaccRuntime.lib;%(OpenCVLib);kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuild>
-      <Command>"%HIPACC_PATH%/bin/hipacc.exe" -emit-cpu -omp off -vectorize off -instruction-set sse4.2 -o "%(Filename)_cpu.cc" -I ../../common "%(FullPath)"</Command>
+      <Command>rem
+rem Load parameter configuration from file
+rem
+if exist cpu.conf (set CONFIG_FILE=cpu.conf) else (set CONFIG_FILE=..\..\common\config\cpu.conf)
+setlocal enabledelayedexpansion
+set HIPACC_OPTS=
+for /f "delims=" %%x in (%CONFIG_FILE%) do set HIPACC_OPTS=!HIPACC_OPTS! %%x
+
+rem
+rem Run Hipacc compiler
+rem
+"%HIPACC_PATH%/bin/hipacc.exe" -emit-cpu %HIPACC_OPTS% -o "%(Filename)_cpu.cc" -I ../../common "%(FullPath)"</Command>
     </CustomBuild>
     <CustomBuild>
       <Message>Run Hipacc Compiler</Message>
