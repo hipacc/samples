@@ -16,12 +16,14 @@
     </ClCompile>
     <CustomBuild Include="src\main.cpp">
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename)_cpu.cc</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../common/config/cpu.conf</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../common/config/cpu.conf</AdditionalInputs>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <Media Include="..\..\common\config\cpu.conf">
+    <None Include="..\..\common\config\cpu.conf">
       <FileType>Document</FileType>
-    </Media>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F06CB286-FC65-454B-B42B-3E3CE6A171E6}</ProjectGuid>
