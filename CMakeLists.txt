@@ -1,6 +1,9 @@
 # configure build tools
 configure_file(buildtools/unix/Makefile.in ${CMAKE_BINARY_DIR}/samples/buildtools/unix/Makefile)
 
+# install common files
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/common DESTINATION samples COMPONENT samples)
+
 file(GLOB SAMPLE_DIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/[0-9]*)
 foreach(SAMPLE_DIR IN LISTS SAMPLE_DIRS)
     # install samples
