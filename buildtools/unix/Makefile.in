@@ -84,7 +84,7 @@ endif
 
 # Turn on GNU Make feature for using automatic variables in dependencies
 .SECONDEXPANSION:
-.PHONY: cpu cuda opencl-cpu opencl-gpu renderscript filterscript
+.PHONY: cpu cuda opencl-acc opencl-cpu opencl-gpu renderscript filterscript
 .PRECIOUS: main_%.cc
 
 ################################################################################
@@ -93,7 +93,7 @@ endif
 all: cpu
 
 # Run CPU/CUDA/OpenCL binary
-cpu cuda opencl-cpu opencl-gpu: main_$$@
+cpu cuda opencl-acc opencl-cpu opencl-gpu: main_$$@
 	./main_$@
 
 # Run Renderscript/Filterscript binary on Android device
