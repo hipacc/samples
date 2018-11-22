@@ -72,17 +72,8 @@ HIPACC_OPTS    = -emit-$(1) \
 
 ifdef PKG_CONFIG
 # Check for OpenCV
-OPENCV=opencv4
-ifeq ($(shell if $(PKG_CONFIG) --exists opencv4; then echo true; fi),true)
-OPENCV = opencv4
-else
-ifeq ($(shell if $(PKG_CONFIG) --exists opencv4; then echo true; fi),true)
-OPENCV = opencv
-else
-OPENCV = none
-endif
-endif
-ifneq ($(OPENCV),none)
+OPENCV=$(shell $(PKG_CONFIG) --list-all | grep opencv | head -n1 | cut -d" " -f1)
+ifneq ($(OPENCV),)
 HIPACC_FLAGS   += $(shell $(PKG_CONFIG) --cflags-only-other $(OPENCV)) -DUSE_OPENCV
 HIPACC_INCLUDE += $(shell $(PKG_CONFIG) --cflags-only-I $(OPENCV))
 CXX_FLAGS      += $(shell $(PKG_CONFIG) --cflags-only-other $(OPENCV)) -DUSE_OPENCV
