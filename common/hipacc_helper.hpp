@@ -13,7 +13,7 @@
 
 
 // get time in milliseconds
-double time_ms () {
+double time_ms() {
     auto time = std::chrono::system_clock::now().time_since_epoch();
     return std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
 }
@@ -60,7 +60,7 @@ T* load_data(const unsigned int width, const unsigned int height,
             if (chan == 1) {
                 // convert to grayscale
                 cv::Mat gray_image;
-                cv::cvtColor(image, gray_image, CV_BGR2GRAY);
+                cv::cvtColor(image, gray_image, cv::COLOR_BGR2GRAY);
                 for (unsigned int p = 0; p < width*height; ++p) {
                     data[p] = (T)gray_image.data[p];
                 }

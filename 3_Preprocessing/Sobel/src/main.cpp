@@ -85,7 +85,7 @@ class SobelCombine : public Kernel<uchar> {
         void kernel() {
             data_t in1 = input1()/norm;
             data_t in2 = input2()/norm;
-            float result = sqrt((float)(in1*in1 + in2*in2));
+            float result = sqrtf((float)(in1*in1 + in2*in2));
             result = min(result, 255.0f);
             result = max(result, 0.0f);
             output() = result;
@@ -276,11 +276,9 @@ void sobel_combine(data_t *input1, data_t *input2, uchar *out,
     for (int p = 0; p < width*height; ++p) {
         data_t in1 = input1[p]/norm;
         data_t in2 = input2[p]/norm;
-        float result = sqrt(in1*in1 + in2*in2);
+        float result = std::sqrt((float)(in1*in1 + in2*in2));
         result = min(result, 255.0f);
         result = max(result, 0.0f);
         out[p] = result;
     }
 }
-
-
