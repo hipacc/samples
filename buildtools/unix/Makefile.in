@@ -34,8 +34,10 @@ OS           := $(shell uname)
 CXX_FLAGS     = -std=c++11 -O2
 CXX_INCLUDE   = -I ../../common \
                 -I $(HIPACC_PATH)/include
-CXX_LIB_DIR   = -L $(HIPACC_PATH)/lib
-CXX_LINK      = -lhipaccRuntime
+
+# standalone runtime disabled by default
+#CXX_LIB_DIR   = -L $(HIPACC_PATH)/lib
+#CXX_LINK      = -lhipaccRuntime
 
 OCL_INCLUDE   = $(CXX_INCLUDE)
 OCL_LIB_DIR   = $(CXX_LIB_DIR)
