@@ -98,7 +98,7 @@ int main(int argc, const char **argv) {
 # define SIZE 5
 #endif
 
-    int coef[SIZE][SIZE] = {
+    const int coef[SIZE][SIZE] = {
 #if SIZE_X==1
         { 0,  1,  0 },
         { 1, -4,  1 },
