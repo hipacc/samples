@@ -13,26 +13,30 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(HIPPAC_SAMPLES_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 macro(add_hipacc_sample_cpu)
-   
-    message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME}_Cpu")
 
-    add_executable(${PROJECT_NAME}_Cpu)
+    get_filename_component(SAMPLE_NAME "${CMAKE_CURRENT_LIST_DIR}" NAME)
+
+    project(${SAMPLE_NAME}_Cpu LANGUAGES CXX)
+   
+    message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME}")
+
+    add_executable(${PROJECT_NAME})
     
-    add_hipacc_sources(TARGET ${PROJECT_NAME}_Cpu PRIVATE
+    add_hipacc_sources(TARGET ${PROJECT_NAME} PRIVATE
                        TARGET_ARCH CPU 
                        SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
                        INCLUDE_DIRS ${HIPPAC_SAMPLES_DIR}/common)
        
-    add_test(NAME ${PROJECT_NAME}_Cpu
-             COMMAND $<TARGET_FILE:${PROJECT_NAME}_Cpu>
+    add_test(NAME ${PROJECT_NAME}
+             COMMAND $<TARGET_FILE:${PROJECT_NAME}>
              WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
              
-    set_target_properties (${PROJECT_NAME}_Cpu PROPERTIES FOLDER ${SAMPLE_CATEGORY})
+    set_target_properties (${PROJECT_NAME} PROPERTIES FOLDER ${SAMPLE_CATEGORY})
                    
     if(HIPACC_SAMPLE_USE_OPENCV)
-        target_compile_options(${PROJECT_NAME}_Cpu PRIVATE -DUSE_OPENCV)
-        target_link_directories(${PROJECT_NAME}_Cpu PRIVATE ${OpenCV_INCLUDE_DIRS})
-        target_link_libraries(${PROJECT_NAME}_Cpu ${OpenCV_LIBS})
+        target_compile_options(${PROJECT_NAME} PRIVATE -DUSE_OPENCV)
+        target_link_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
+        target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
     endif()
     
 endmacro()
@@ -43,31 +47,35 @@ macro(add_hipacc_sample_cuda)
 
     if(CMAKE_CUDA_COMPILER)
 
-        message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME}_Cuda")
+        get_filename_component(SAMPLE_NAME "${CMAKE_CURRENT_LIST_DIR}" NAME)
+
+        project(${SAMPLE_NAME}_Cuda LANGUAGES CXX CUDA)
+
+        message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME}")
            
-        add_executable(${PROJECT_NAME}_Cuda)
+        add_executable(${PROJECT_NAME})
                             
-        add_hipacc_sources(TARGET ${PROJECT_NAME}_Cuda PRIVATE
+        add_hipacc_sources(TARGET ${PROJECT_NAME} PRIVATE
                            TARGET_ARCH CUDA 
                            SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
                            INCLUDE_DIRS ${HIPPAC_SAMPLES_DIR}/common)                            
                             
-        add_test(NAME ${PROJECT_NAME}_Cuda
-                 COMMAND $<TARGET_FILE:${PROJECT_NAME}_Cuda>                       
+        add_test(NAME ${PROJECT_NAME}
+                 COMMAND $<TARGET_FILE:${PROJECT_NAME}>                       
                  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
-        set_target_properties(${PROJECT_NAME}_Cuda PROPERTIES FOLDER ${SAMPLE_CATEGORY})
+        set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${SAMPLE_CATEGORY})
                               
-        target_compile_features(${PROJECT_NAME}_Cuda PUBLIC cxx_std_11)   
+        target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)   
                                             
         if(HIPACC_SAMPLE_USE_OPENCV)
-            target_compile_options(${PROJECT_NAME}_Cuda PRIVATE -DUSE_OPENCV)
-            target_link_directories(${PROJECT_NAME}_Cuda PRIVATE ${OpenCV_INCLUDE_DIRS})
-            target_link_libraries(${PROJECT_NAME}_Cuda ${OpenCV_LIBS})
+            target_compile_options(${PROJECT_NAME} PRIVATE -DUSE_OPENCV)
+            target_link_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
+            target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
         endif()
         
     else()
-        message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME}_Cuda (CUDA missing)")
+        message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} (CUDA missing)")
     endif()
     
 endmacro()
@@ -82,5 +90,3 @@ macro(add_all_subdirectories)
 endmacro()
 
 add_all_subdirectories()
-
-
