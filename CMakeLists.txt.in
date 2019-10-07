@@ -15,13 +15,27 @@ set(HIPPAC_SAMPLES_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-macro(add_hipacc_sample_cpu)
+function(add_hipacc_sample_cpu)
+
+    set(options HIDE)
+    set(oneValueArgs)
+    set(multiValueArgs)
+
+    cmake_parse_arguments(ARG
+                        "${options}"
+                        "${oneValueArgs}"
+                        "${multiValueArgs}"
+                        ${ARGN})
 
     get_filename_component(SAMPLE_NAME "${CMAKE_CURRENT_LIST_DIR}" NAME)
 
     project(${SAMPLE_NAME}_Cpu)
    
-    message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME}")
+    if(${ARG_HIDE})
+        set(_MSG_ADDITION "(hidden)")
+    endif()
+
+    message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} ${_MSG_ADDITION}")
 
     add_executable(${PROJECT_NAME})
 
@@ -33,11 +47,13 @@ macro(add_hipacc_sample_cpu)
                        SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
                        INCLUDE_DIRS ${HIPPAC_SAMPLES_DIR}/common
                        OPTIONS "${_CONFIG_FILE}")
-           
-    add_test(NAME ${PROJECT_NAME}
-             COMMAND $<TARGET_FILE:${PROJECT_NAME}>
-             WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
-             
+
+    if(NOT ${ARG_HIDE})
+        add_test(NAME ${PROJECT_NAME}
+                COMMAND $<TARGET_FILE:${PROJECT_NAME}>
+                WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+    endif()
+    
     set_target_properties (${PROJECT_NAME} PROPERTIES FOLDER ${SAMPLE_CATEGORY})
                    
     if(HIPACC_SAMPLE_USE_OPENCV)
@@ -46,9 +62,19 @@ macro(add_hipacc_sample_cpu)
         target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
     endif()
     
-endmacro()
+endfunction()
 
-macro(add_hipacc_sample_cuda)
+function(add_hipacc_sample_cuda)
+
+    set(options HIDE)
+    set(oneValueArgs)
+    set(multiValueArgs)
+
+    cmake_parse_arguments(ARG
+                        "${options}"
+                        "${oneValueArgs}"
+                        "${multiValueArgs}"
+                        ${ARGN})
 
     check_language(CUDA)
 
@@ -58,7 +84,11 @@ macro(add_hipacc_sample_cuda)
 
         project(${SAMPLE_NAME}_Cuda LANGUAGES CXX CUDA)
 
-        message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME}")
+        if(${ARG_HIDE})
+            set(_MSG_ADDITION "(hidden)")
+        endif()
+
+        message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} ${_MSG_ADDITION}")
            
         add_executable(${PROJECT_NAME})
                             
@@ -71,9 +101,11 @@ macro(add_hipacc_sample_cuda)
                            INCLUDE_DIRS ${HIPPAC_SAMPLES_DIR}/common
                            OPTIONS "${_CONFIG_FILE}")
 
-        add_test(NAME ${PROJECT_NAME}
-                 COMMAND $<TARGET_FILE:${PROJECT_NAME}>                       
-                 WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+        if(NOT ${ARG_HIDE})
+            add_test(NAME ${PROJECT_NAME}
+                    COMMAND $<TARGET_FILE:${PROJECT_NAME}>                       
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+        endif()
 
         set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${SAMPLE_CATEGORY})
                               
@@ -89,7 +121,7 @@ macro(add_hipacc_sample_cuda)
         message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} (CUDA missing)")
     endif()
     
-endmacro()
+endfunction()
 
 macro(add_all_subdirectories)
     file(GLOB _SUB_DIRS RELATIVE "${CMAKE_CURRENT_LIST_DIR}" "${CMAKE_CURRENT_LIST_DIR}/*")
