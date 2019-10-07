@@ -15,7 +15,7 @@ set(HIPPAC_SAMPLES_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-function(add_hipacc_sample_cpu)
+macro(add_hipacc_sample_cpu)
 
     set(options HIDE)
     set(oneValueArgs)
@@ -33,6 +33,8 @@ function(add_hipacc_sample_cpu)
    
     if(${ARG_HIDE})
         set(_MSG_ADDITION "(hidden)")
+    else()
+        unset(_MSG_ADDITION)
     endif()
 
     message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} ${_MSG_ADDITION}")
@@ -62,15 +64,15 @@ function(add_hipacc_sample_cpu)
         target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
     endif()
     
-endfunction()
+endmacro()
 
-function(add_hipacc_sample_cuda)
+macro(add_hipacc_sample_cuda)
 
     set(options HIDE)
     set(oneValueArgs)
     set(multiValueArgs)
 
-    cmake_parse_arguments(ARG
+    cmake_parse_arguments(ARG_CUDA
                         "${options}"
                         "${oneValueArgs}"
                         "${multiValueArgs}"
@@ -84,8 +86,10 @@ function(add_hipacc_sample_cuda)
 
         project(${SAMPLE_NAME}_Cuda LANGUAGES CXX CUDA)
 
-        if(${ARG_HIDE})
+        if(${ARG_CUDA_HIDE})
             set(_MSG_ADDITION "(hidden)")
+        else()
+            unset(_MSG_ADDITION)
         endif()
 
         message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} ${_MSG_ADDITION}")
@@ -101,7 +105,7 @@ function(add_hipacc_sample_cuda)
                            INCLUDE_DIRS ${HIPPAC_SAMPLES_DIR}/common
                            OPTIONS "${_CONFIG_FILE}")
 
-        if(NOT ${ARG_HIDE})
+        if(NOT ${ARG_CUDA_HIDE})
             add_test(NAME ${PROJECT_NAME}
                     COMMAND $<TARGET_FILE:${PROJECT_NAME}>                       
                     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
@@ -121,7 +125,7 @@ function(add_hipacc_sample_cuda)
         message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} (CUDA missing)")
     endif()
     
-endfunction()
+endmacro()
 
 macro(add_all_subdirectories)
     file(GLOB _SUB_DIRS RELATIVE "${CMAKE_CURRENT_LIST_DIR}" "${CMAKE_CURRENT_LIST_DIR}/*")
