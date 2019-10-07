@@ -19,7 +19,7 @@ macro(add_hipacc_sample_cpu)
 
     get_filename_component(SAMPLE_NAME "${CMAKE_CURRENT_LIST_DIR}" NAME)
 
-    project(${SAMPLE_NAME}_Cpu LANGUAGES CXX)
+    project(${SAMPLE_NAME}_Cpu)
    
     message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME}")
 
@@ -32,7 +32,7 @@ macro(add_hipacc_sample_cpu)
                        TARGET_ARCH CPU 
                        SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
                        INCLUDE_DIRS ${HIPPAC_SAMPLES_DIR}/common
-                       OPTIONS ${_CONFIG_FILE})
+                       OPTIONS "${_CONFIG_FILE}")
            
     add_test(NAME ${PROJECT_NAME}
              COMMAND $<TARGET_FILE:${PROJECT_NAME}>
@@ -69,7 +69,7 @@ macro(add_hipacc_sample_cuda)
                            TARGET_ARCH CUDA 
                            SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
                            INCLUDE_DIRS ${HIPPAC_SAMPLES_DIR}/common
-                           OPTIONS ${_CONFIG_FILE})
+                           OPTIONS "${_CONFIG_FILE}")
 
         add_test(NAME ${PROJECT_NAME}
                  COMMAND $<TARGET_FILE:${PROJECT_NAME}>                       
