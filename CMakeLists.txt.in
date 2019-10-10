@@ -127,6 +127,82 @@ macro(add_hipacc_sample_cuda)
     
 endmacro()
 
+macro(add_hipacc_sample_opencl)
+
+    set(options HIDE CPU GPU ACC)
+    set(oneValueArgs)
+    set(multiValueArgs)
+
+    cmake_parse_arguments(ARG_OPENCL
+                        "${options}"
+                        "${oneValueArgs}"
+                        "${multiValueArgs}"
+                        ${ARGN})
+
+    if(OpenCL_FOUND)
+
+        get_filename_component(SAMPLE_NAME "${CMAKE_CURRENT_LIST_DIR}" NAME)
+
+        set(_OPENCL_TARGET_DEVICES)
+
+        if(ARG_OPENCL_CPU)
+            list(APPEND _OPENCL_TARGET_DEVICES CPU)
+        endif()
+
+        if(ARG_OPENCL_GPU)
+            list(APPEND _OPENCL_TARGET_DEVICES GPU)
+        endif()
+
+        if(ARG_OPENCL_ACC)
+            list(APPEND _OPENCL_TARGET_DEVICES ACC)
+        endif()
+
+        foreach(_TARGET_DEVICE IN LISTS _OPENCL_TARGET_DEVICES)
+            project(${SAMPLE_NAME}_OpenCL_${_TARGET_DEVICE} LANGUAGES CXX)
+
+            if(${ARG_OPENCL_HIDE})
+                set(_MSG_ADDITION "(hidden)")
+            else()
+                unset(_MSG_ADDITION)
+            endif()
+
+            message(STATUS "Add sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} ${_MSG_ADDITION}")
+            
+            add_executable(${PROJECT_NAME})
+
+            string(TOLOWER ${_TARGET_DEVICE} _TARGET_DEVICE_LOW)
+            file(STRINGS "${HIPPAC_SAMPLES_DIR}/common/config/opencl-${_TARGET_DEVICE_LOW}.conf" _CONFIG_FILE NEWLINE_CONSUME)
+            string(REPLACE "\n" ";" _CONFIG_FILE ${_CONFIG_FILE})
+        
+            add_hipacc_sources(TARGET ${PROJECT_NAME} PRIVATE
+                               TARGET_ARCH OPENCL-${_TARGET_DEVICE}
+                               SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
+                               INCLUDE_DIRS ${HIPPAC_SAMPLES_DIR}/common
+                               OPTIONS "${_CONFIG_FILE}"
+                               OUTPUT_DIR_VAR _HIPACC_OUTPUT_DIR)
+    
+            if(NOT ${ARG_OPENCL_HIDE})
+                add_test(NAME ${PROJECT_NAME}
+                        COMMAND $<TARGET_FILE:${PROJECT_NAME}>
+                        WORKING_DIRECTORY ${_HIPACC_OUTPUT_DIR})
+            endif()
+
+            target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)   
+                                            
+            if(HIPACC_SAMPLE_USE_OPENCV)
+                target_compile_options(${PROJECT_NAME} PRIVATE -DUSE_OPENCV)
+                target_link_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
+                target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
+            endif()
+
+        endforeach()
+        
+    else()
+        message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} (OpenCL missing)")
+    endif()
+    
+endmacro()
+
 macro(add_all_subdirectories)
     file(GLOB _SUB_DIRS RELATIVE "${CMAKE_CURRENT_LIST_DIR}" "${CMAKE_CURRENT_LIST_DIR}/*")
     foreach(_SUB_DIR ${_SUB_DIRS})

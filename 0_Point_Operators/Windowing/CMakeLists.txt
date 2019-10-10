@@ -6,3 +6,4 @@ project(${SAMPLE_NAME})
 
 add_hipacc_sample_cpu()
 add_hipacc_sample_cuda()
+add_hipacc_sample_opencl(CPU GPU)

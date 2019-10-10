@@ -6,3 +6,4 @@ project(${SAMPLE_NAME})
 
 add_hipacc_sample_cpu(HIDE) # unstable
 add_hipacc_sample_cuda(HIDE) # unstable
+add_hipacc_sample_opencl(HIDE CPU GPU)
