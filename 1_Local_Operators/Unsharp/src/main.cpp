@@ -30,13 +30,18 @@
 #include "hipacc.hpp"
 
 #include <hipacc_helper.hpp>
+
+
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
 #include <iostream>
 
 #define SIZE_X 3
 #define SIZE_Y 3
 #define WIDTH 4032
 #define HEIGHT 3024
-#define IMAGE "../../common/img/fuerte_ship.jpg"
+#define IMAGE IMAGE_BASE_PATH"/fuerte_ship.jpg"
 
 #define data_t uchar
 

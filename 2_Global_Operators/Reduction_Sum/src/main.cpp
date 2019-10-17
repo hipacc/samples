@@ -30,6 +30,11 @@
 #include <hipacc_helper.hpp>
 
 
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
+
+
 #define WIDTH  4096
 #define HEIGHT 4096
 

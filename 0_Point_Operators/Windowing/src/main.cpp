@@ -30,9 +30,14 @@
 #include <hipacc_helper.hpp>
 
 
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
+
+
 #define WIDTH  4032
 #define HEIGHT 3024
-#define IMAGE  "../../common/img/fuerte_ship.jpg"
+#define IMAGE  IMAGE_BASE_PATH"/fuerte_ship.jpg"
 
 
 using namespace hipacc;

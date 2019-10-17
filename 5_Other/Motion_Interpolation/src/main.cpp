@@ -30,10 +30,15 @@
 #include <hipacc_helper.hpp>
 
 
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
+
+
 #define WIDTH  512
 #define HEIGHT 512
-#define IMAGE1 "../../common/img/q5_00164.jpg"
-#define IMAGE2 "../../common/img/q5_00165.jpg"
+#define IMAGE1 IMAGE_BASE_PATH"/q5_00164.jpg"
+#define IMAGE2 IMAGE_BASE_PATH"/q5_00165.jpg"
 
 #define SIZE_X        7
 #define SIZE_Y        7
