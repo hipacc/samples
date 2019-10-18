@@ -69,7 +69,13 @@ macro(add_hipacc_sample_cpu)
         target_link_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
         target_link_libraries(${PROJECT_NAME} PRIVATE ${OpenCV_LIBS})
     endif()
-    
+
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+      target_compile_options(${PROJECT_NAME} PRIVATE /openmp)
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      target_compile_options(${PROJECT_NAME} PRIVATE -fopenmp)
+    endif ()
+
 endmacro()
 
 macro(add_hipacc_sample_cuda)
