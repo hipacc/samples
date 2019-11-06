@@ -78,7 +78,7 @@ int main(int argc, const char **argv) {
 
     // host memory for image of width x height pixels
     float *input = load_data<float>(width, height);
-    float ref_out;
+    float ref_out = 0.0f;
 
     std::cout << "Calculating Hipacc reduction ..." << std::endl;
 

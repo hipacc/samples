@@ -4,6 +4,6 @@ get_filename_component(SAMPLE_NAME "${CMAKE_CURRENT_LIST_DIR}" NAME)
 
 project(${SAMPLE_NAME})
 
-add_hipacc_sample_cpu(HIDE) # unstable
-add_hipacc_sample_cuda(HIDE) # unstable
-add_hipacc_sample_opencl(HIDE CPU GPU)
+add_hipacc_sample_cpu()
+add_hipacc_sample_cuda()
+add_hipacc_sample_opencl(CPU GPU)
