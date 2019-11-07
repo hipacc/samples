@@ -147,8 +147,10 @@ public:
   void kernel() { 
     uchar4 in = Input();
     float r = InputRatio();
-    output() = {(uchar)(in.x * r), (uchar)(in.y * r), (uchar)(in.z * r), 
-      (uchar)(in.w)};
+    in.x *= r;
+    in.y *= r;
+    in.z *= r;
+    output() = in;
   }
 };
 
