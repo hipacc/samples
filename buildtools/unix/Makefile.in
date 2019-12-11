@@ -61,9 +61,6 @@ endif
 endif
 
 HIPACC_FLAGS   = -std=c++11 -nostdinc++
-ifeq ($(OS),Darwin)
-HIPACC_FLAGS  += -isystem `xcrun --sdk macosx --show-sdk-path`/usr/include
-endif
 DSL_INCLUDE    = -I ../../common \
                  -I $(HIPACC_PATH)/include/dsl
 HIPACC_INCLUDE = $(DSL_INCLUDE) \
