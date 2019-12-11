@@ -114,7 +114,7 @@ class Bokeh : public Kernel<data_t> {
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     float threshold = 0.9f;
     float amp = 150.0f;
 

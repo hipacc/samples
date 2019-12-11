@@ -73,7 +73,7 @@ void erode_filter(uchar *in, uchar *out, int size_x, int size_y,
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     const int size_x = SIZE_X;

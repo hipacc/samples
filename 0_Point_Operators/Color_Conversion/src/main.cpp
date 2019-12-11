@@ -69,7 +69,7 @@ void color_conversion(uchar4 *in, uchar *out, int width, int height);
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     float timing = 0;
