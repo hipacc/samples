@@ -151,7 +151,7 @@ class Chrome : public Kernel<data_t> {
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     float rindex = 0.9975f;
     float gindex = 0.995f;
 

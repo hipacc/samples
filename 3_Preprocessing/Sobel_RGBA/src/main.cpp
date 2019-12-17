@@ -111,7 +111,7 @@ void sobel_combine(data_t *input1, data_t *input2, uchar4 *out,
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     const int size_x = SIZE_X;
