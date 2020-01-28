@@ -17,7 +17,7 @@ if(OpenCV_FOUND)
     option(HIPACC_SAMPLE_USE_OPENCV "Use OpenCV library to display result images of samples" ON)
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 macro(add_hipacc_sample_cpu)
@@ -205,6 +205,7 @@ macro(add_hipacc_sample_opencl)
                         WORKING_DIRECTORY ${_HIPACC_OUTPUT_DIR})
             endif()
 
+            set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${SAMPLE_CATEGORY})
             target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)   
                                             
             if(HIPACC_SAMPLE_USE_OPENCV)
