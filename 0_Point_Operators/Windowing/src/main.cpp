@@ -30,9 +30,14 @@
 #include <hipacc_helper.hpp>
 
 
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
+
+
 #define WIDTH  4032
 #define HEIGHT 3024
-#define IMAGE  "../../common/img/fuerte_ship.jpg"
+#define IMAGE  IMAGE_BASE_PATH"/fuerte_ship.jpg"
 
 
 using namespace hipacc;
@@ -73,7 +78,7 @@ void windowing_filter(float *in, float *out, int width, int height,
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     float center = 128.0f;

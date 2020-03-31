@@ -30,6 +30,11 @@
 #include <hipacc_helper.hpp>
 
 
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
+
+
 #define WIDTH  4096
 #define HEIGHT 4096
 
@@ -66,14 +71,14 @@ void reduction(float *in, float *out, int width, int height);
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     float timing = 0;
 
     // host memory for image of width x height pixels
     float *input = load_data<float>(width, height);
-    float ref_out;
+    float ref_out = 0.0f;
 
     std::cout << "Calculating Hipacc reduction ..." << std::endl;
 

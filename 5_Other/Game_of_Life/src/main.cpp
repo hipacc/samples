@@ -30,6 +30,11 @@
 #include <hipacc_helper.hpp>
 
 
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
+
+
 #define WIDTH  800
 #define HEIGHT 600
 
@@ -67,7 +72,7 @@ class GoL : public Kernel<uchar> {
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
 

@@ -30,97 +30,139 @@
 #include "hipacc.hpp"
 
 #include <hipacc_helper.hpp>
+
+
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
 #include <iostream>
 
 #define SIZE_X 3
 #define SIZE_Y 3
 #define WIDTH 4032
 #define HEIGHT 3024
-#define IMAGE "../../common/img/fuerte_ship.jpg"
+#define IMAGE IMAGE_BASE_PATH"/fuerte_ship.jpg"
 
-#define data_t uchar
 
 using namespace hipacc;
 using namespace hipacc::math;
 
+
 // Kernel description in Hipacc
-class GaussianBlur : public Kernel<uchar> {
+
+class RGB2Gray : public Kernel<float> {
 private:
-  Accessor<uchar> &input;
+  Accessor<uchar4> &input;
+
+public:
+  RGB2Gray(IterationSpace<float> &iter, Accessor<uchar4> &input)
+      : Kernel(iter), input(input) {
+    add_accessor(&input);
+  }
+
+  void kernel() {
+    uchar4 pixel = input();
+    float c = 1.0f/2.2f;
+
+    // gamma correction
+    float xg = powf((float)pixel.x, c);
+    float yg = powf((float)pixel.y, c);
+    float zg = powf((float)pixel.z, c);
+    // Luminance
+    output() = 0.2126f * xg + 0.7152 * yg + 0.0722 * zg;
+  }
+};
+
+
+class GaussianBlur : public Kernel<float> {
+private:
+  Accessor<float> &input;
   Mask<float> &mask;
 
 public:
-  GaussianBlur(IterationSpace<data_t> &iter, Accessor<uchar> &input,
+  GaussianBlur(IterationSpace<float> &iter, Accessor<float> &input,
                Mask<float> &mask)
       : Kernel(iter), input(input), mask(mask) {
     add_accessor(&input);
   }
 
   void kernel() {
-    output() =
-        (data_t)(convolve(mask, Reduce::SUM,
-                          [&]() -> float { return mask() * input(mask); }) +
-                 0.5f);
+    output() = convolve(mask, Reduce::SUM,
+               [&]() -> float { return mask() * input(mask); });
   }
 };
 
-class Sharpen : public Kernel<data_t> {
+
+class Sharpen : public Kernel<float> {
 private:
-  Accessor<data_t> &Input;
-  Accessor<data_t> &InputBlur;
+  Accessor<float> &Gray;
+  Accessor<float> &InputBlur;
 
 public:
-  Sharpen(IterationSpace<data_t> &IS, Accessor<data_t> &Input,
-          Accessor<data_t> &InputBlur)
-      : Kernel(IS), Input(Input), InputBlur(InputBlur) {
-    add_accessor(&Input);
+  Sharpen(IterationSpace<float> &IS, Accessor<float> &Gray,
+          Accessor<float> &InputBlur)
+      : Kernel(IS), Gray(Gray), InputBlur(InputBlur) {
+    add_accessor(&Gray);
     add_accessor(&InputBlur);
   }
 
-  void kernel() { output() = 2 * Input() - InputBlur(); }
+  void kernel() { output() = 2 * Gray() - InputBlur(); }
 };
 
-class Ratio : public Kernel<data_t> {
+
+class Ratio : public Kernel<float> {
 private:
-  Accessor<data_t> &Input;
-  Accessor<data_t> &InputSharp;
+  Accessor<float> &Gray;
+  Accessor<float> &InputSharp;
 
 public:
-  Ratio(IterationSpace<data_t> &IS, Accessor<data_t> &Input,
-        Accessor<data_t> &InputSharp)
-      : Kernel(IS), Input(Input), InputSharp(InputSharp) {
-    add_accessor(&Input);
+  Ratio(IterationSpace<float> &IS, Accessor<float> &Gray,
+        Accessor<float> &InputSharp)
+      : Kernel(IS), Gray(Gray), InputSharp(InputSharp) {
+    add_accessor(&Gray);
     add_accessor(&InputSharp);
   }
 
-  void kernel() { output() = InputSharp() / Input(); }
+  void kernel() { 
+    float pixel = Gray();
+    pixel = max(pixel, 0.01f); 
+    output() = InputSharp() / pixel; 
+  }
 };
 
-class Unsharp : public Kernel<data_t> {
+
+class Unsharp : public Kernel<uchar4> {
 private:
-  Accessor<data_t> &Input;
-  Accessor<data_t> &InputRatio;
+  Accessor<uchar4> &Input;
+  Accessor<float> &InputRatio;
 
 public:
-  Unsharp(IterationSpace<data_t> &IS, Accessor<data_t> &Input,
-          Accessor<data_t> &InputRatio)
+  Unsharp(IterationSpace<uchar4> &IS, Accessor<uchar4> &Input,
+          Accessor<float> &InputRatio)
       : Kernel(IS), Input(Input), InputRatio(InputRatio) {
     add_accessor(&Input);
     add_accessor(&InputRatio);
   }
 
-  void kernel() { output() = InputRatio() * Input(); }
+  void kernel() { 
+    uchar4 in = Input();
+    float r = InputRatio();
+    in.x *= r;
+    in.y *= r;
+    in.z *= r;
+    output() = in;
+  }
 };
+
 
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
   const int width = WIDTH;
   const int height = HEIGHT;
   const int size_x = SIZE_X;
   const int size_y = SIZE_Y;
-  const short norm = 16;
   float timing = 0;
 
   // only filter kernel sizes 3x3, 5x5, and 7x7 implemented
@@ -156,62 +198,71 @@ int main(int argc, const char **argv) {
   };
 
   // host memory for image of width x height pixels
-  uchar *input = load_data<uchar>(width, height, 1, IMAGE);
+  uchar4 *input = (uchar4*)load_data<uchar>(width, height, 4, IMAGE);
 
   std::cout << "Calculating Hipacc Unsharp filter ..." << std::endl;
 
   //************************************************************************//
 
-  // input and output image of width x height pixels
-  Image<uchar> in(width, height, input);
-  Image<data_t> blur(width, height);
-  Image<data_t> sharp(width, height);
-  Image<data_t> ratio(width, height);
-  Image<data_t> out(width, height);
+  // input and output images
+  Image<uchar4> in(width, height, input);
+  Image<float> gray(width, height);
+  Image<float> blur(width, height);
+  Image<float> sharp(width, height);
+  Image<float> ratio(width, height);
+  Image<uchar4> out(width, height);
 
   // define Mask for Gaussian filter
   Mask<float> mask(coef);
 
-  BoundaryCondition<uchar> bound(in, mask, Boundary::CLAMP);
-  Accessor<uchar> accInBound(bound);
-  Accessor<uchar> accIn(in);
-  IterationSpace<data_t> iterBlur(blur);
-  GaussianBlur GB(iterBlur, accInBound, mask);
+  IterationSpace<float> iterGray(gray);
+  Accessor<uchar4> accIn(in);
+  RGB2Gray rgb2gray(iterGray, accIn);
+  rgb2gray.execute();
+  timing = hipacc_last_kernel_timing();
+
+  BoundaryCondition<float> bound(gray, mask, Boundary::CLAMP);
+  Accessor<float> accGrayBound(bound);
+  Accessor<float> accGray(gray);
+  IterationSpace<float> iterBlur(blur);
+  GaussianBlur GB(iterBlur, accGrayBound, mask);
   GB.execute();
   timing = hipacc_last_kernel_timing();
 
-  IterationSpace<data_t> iterSharp(sharp);
-  Accessor<data_t> accBlur(blur);
-  Sharpen Sha(iterSharp, accIn, accBlur);
+  IterationSpace<float> iterSharp(sharp);
+  Accessor<float> accBlur(blur);
+  Sharpen Sha(iterSharp, accGray, accBlur);
   Sha.execute();
   timing = hipacc_last_kernel_timing();
 
-  IterationSpace<data_t> iterRatio(ratio);
-  Accessor<data_t> accSharp(sharp);
-  Ratio Rat(iterRatio, accIn, accSharp);
+  IterationSpace<float> iterRatio(ratio);
+  Accessor<float> accSharp(sharp);
+  Ratio Rat(iterRatio, accGray, accSharp);
   Rat.execute();
   timing = hipacc_last_kernel_timing();
 
-  IterationSpace<uchar> iter(out);
-  Accessor<data_t> accRatio(ratio);
-  Unsharp Uns(iterRatio, accIn, accRatio);
+  IterationSpace<uchar4> iter(out);
+  Accessor<float> accRatio(ratio);
+  Unsharp Uns(iter, accIn, accRatio);
   Uns.execute();
   timing = hipacc_last_kernel_timing();
 
   // get pointer to result data
-  uchar *output = out.data();
+  uchar4 *output = out.data();
 
   //************************************************************************//
 
   std::cout << "Hipacc: " << timing << " ms, "
             << (width * height / timing) / 1000 << " Mpixel/s" << std::endl;
 
-  save_data(width, height, 1, input, "input.jpg");
-  save_data(width, height, 1, output, "output.jpg");
-  show_data(width, height, 1, output, "output.jpg");
+  save_data(width, height, 4, (uchar*)input, "input.jpg");
+  save_data(width, height, 4, (uchar*)output, "output.jpg");
+  show_data(width, height, 4, (uchar*)output, "output.jpg");
 
   // free memory
   delete[] input;
 
   return EXIT_SUCCESS;
 }
+
+

@@ -30,11 +30,16 @@
 #include <hipacc_helper.hpp>
 
 
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
+
+
 #define SIZE_X 5
 #define SIZE_Y 5
 #define WIDTH  4032
 #define HEIGHT 3024
-#define IMAGE  "../../common/img/fuerte_ship.jpg"
+#define IMAGE  IMAGE_BASE_PATH"/fuerte_ship.jpg"
 
 
 using namespace hipacc;
@@ -75,7 +80,7 @@ void laplace_filter(uchar4 *in, uchar4 *out, int *filter, int size,
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     const int size_x = SIZE_X;

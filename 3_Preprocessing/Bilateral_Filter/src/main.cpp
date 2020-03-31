@@ -30,11 +30,16 @@
 #include <hipacc_helper.hpp>
 
 
+#ifndef IMAGE_BASE_PATH
+# define IMAGE_BASE_PATH ""
+#endif
+
+
 #define SIGMA_S 13
 #define SIGMA_R 16
 #define WIDTH   4032
 #define HEIGHT  3024
-#define IMAGE   "../../common/img/fuerte_ship.jpg"
+#define IMAGE   IMAGE_BASE_PATH"/fuerte_ship.jpg"
 
 
 using namespace hipacc;
@@ -81,7 +86,7 @@ void bilateral_filter(uchar *in, uchar *out, float *filter,
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     const int sigma_s = SIGMA_S;
