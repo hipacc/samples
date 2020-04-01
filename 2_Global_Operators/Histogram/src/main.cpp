@@ -75,7 +75,7 @@ void histogram(float *in, uint *out, int width, int height, int num_bins);
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     const int num_bins = 256;

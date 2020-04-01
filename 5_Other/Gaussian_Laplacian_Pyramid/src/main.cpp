@@ -138,7 +138,7 @@ class Blend : public Kernel<char> {
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     const int size_x = SIZE_X;

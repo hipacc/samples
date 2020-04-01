@@ -187,7 +187,7 @@ class Scoto : public Kernel<data_t> {
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-int main(int argc, const char **argv) {
+HIPACC_CODEGEN int main(int argc, const char **argv) {
     float timing = 0.0f;
 
     // define filters
