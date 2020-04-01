@@ -30,14 +30,9 @@
 #include <hipacc_helper.hpp>
 
 
-#ifndef IMAGE_BASE_PATH
-# define IMAGE_BASE_PATH ""
-#endif
-
-
 #define WIDTH  4032
 #define HEIGHT 3024
-#define IMAGE  IMAGE_BASE_PATH"/fuerte_night.jpg"
+#define IMAGE  "../../common/img/fuerte_night.jpg"
 
 #define PACK_INT
 
@@ -114,7 +109,7 @@ class Bokeh : public Kernel<data_t> {
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-HIPACC_CODEGEN int main(int argc, const char **argv) {
+int main(int argc, const char **argv) {
     float threshold = 0.9f;
     float amp = 150.0f;
 

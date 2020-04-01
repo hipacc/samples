@@ -30,11 +30,6 @@
 #include <hipacc_helper.hpp>
 
 
-#ifndef IMAGE_BASE_PATH
-# define IMAGE_BASE_PATH ""
-#endif
-
-
 #define WIDTH  4096
 #define HEIGHT 4096
 
@@ -75,7 +70,7 @@ void histogram(float *in, uint *out, int width, int height, int num_bins);
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-HIPACC_CODEGEN int main(int argc, const char **argv) {
+int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     const int num_bins = 256;

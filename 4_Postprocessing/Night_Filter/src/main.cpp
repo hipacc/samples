@@ -30,14 +30,9 @@
 #include <hipacc_helper.hpp>
 
 
-#ifndef IMAGE_BASE_PATH
-# define IMAGE_BASE_PATH ""
-#endif
-
-
 #define WIDTH  4032
 #define HEIGHT 3024
-#define IMAGE  IMAGE_BASE_PATH"/fuerte_ship.jpg"
+#define IMAGE  "../../common/img/fuerte_ship.jpg"
 
 #define FAST_EXP
 #define PACK_INT
@@ -187,7 +182,7 @@ class Scoto : public Kernel<data_t> {
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-HIPACC_CODEGEN int main(int argc, const char **argv) {
+int main(int argc, const char **argv) {
     float timing = 0.0f;
 
     // define filters

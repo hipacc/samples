@@ -30,16 +30,11 @@
 #include <hipacc_helper.hpp>
 
 
-#ifndef IMAGE_BASE_PATH
-# define IMAGE_BASE_PATH ""
-#endif
-
-
 #define SIZE_X 7
 #define SIZE_Y 7
 #define WIDTH  4032
 #define HEIGHT 3024
-#define IMAGE  IMAGE_BASE_PATH"/fuerte_ship.jpg"
+#define IMAGE  "../../common/img/fuerte_ship.jpg"
 
 #if SIZE_X == 7
 # define data_t int
@@ -108,7 +103,7 @@ void sobel_combine(data_t *input1, data_t *input2, uchar *out,
 /*************************************************************************
  * Main function                                                         *
  *************************************************************************/
-HIPACC_CODEGEN int main(int argc, const char **argv) {
+int main(int argc, const char **argv) {
     const int width = WIDTH;
     const int height = HEIGHT;
     const int size_x = SIZE_X;
