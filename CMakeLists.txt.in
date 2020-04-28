@@ -190,10 +190,10 @@ endmacro()
 
 macro(add_hipacc_sample_opencl)
 
-    if(NOT WIN32)
-        message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} (OpenCL disabled on Linux)")
-        return()
-    endif()
+  #  if(NOT WIN32)
+  #      message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} (OpenCL disabled on Linux)")
+  #      return()
+  #  endif()
 
     set(options HIDE CPU GPU ACC)
     set(oneValueArgs)
