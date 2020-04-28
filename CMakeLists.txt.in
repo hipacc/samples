@@ -13,6 +13,12 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(HIPACC_SAMPLES_DIR ${CMAKE_CURRENT_LIST_DIR})
 
+if(OpenCL_FOUND)
+    option(HIPACC_SAMPLE_OPENCL_CPU "Enable CPU targets for OpenCL samples" ON)
+    option(HIPACC_SAMPLE_OPENCL_GPU "Enable GPU targets for OpenCL samples" ON)
+    option(HIPACC_SAMPLE_OPENCL_ACC "Enable ACC targets for OpenCL samples" ON)
+endif()
+
 if(OpenCV_FOUND)
     option(HIPACC_SAMPLE_USE_OPENCV "Use OpenCV library to display result images of samples" ON)
 endif()
@@ -183,17 +189,12 @@ macro(add_hipacc_sample_cuda)
         endif()
         
     else()
-        message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} (CUDA missing)")
+        message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${SAMPLE_NAME}_Cuda (CUDA missing)")
     endif()
     
 endmacro()
 
 macro(add_hipacc_sample_opencl)
-
-  #  if(NOT WIN32)
-  #      message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${PROJECT_NAME} (OpenCL disabled on Linux)")
-  #      return()
-  #  endif()
 
     set(options HIDE CPU GPU ACC)
     set(oneValueArgs)
@@ -212,15 +213,27 @@ macro(add_hipacc_sample_opencl)
         set(_OPENCL_TARGET_DEVICES)
 
         if(ARG_OPENCL_CPU)
-            list(APPEND _OPENCL_TARGET_DEVICES CPU)
+            if(HIPACC_SAMPLE_OPENCL_CPU)
+                list(APPEND _OPENCL_TARGET_DEVICES CPU)
+            else()
+                message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${SAMPLE_NAME}_OpenCL_CPU (OpenCL CPU disabled)")
+            endif()
         endif()
 
         if(ARG_OPENCL_GPU)
-            list(APPEND _OPENCL_TARGET_DEVICES GPU)
+            if(HIPACC_SAMPLE_OPENCL_GPU)
+                list(APPEND _OPENCL_TARGET_DEVICES GPU)
+            else()
+                message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${SAMPLE_NAME}_OpenCL_GPU (OpenCL GPU disabled)")
+            endif()
         endif()
 
         if(ARG_OPENCL_ACC)
-            list(APPEND _OPENCL_TARGET_DEVICES ACC)
+            if(HIPACC_SAMPLE_OPENCL_ACC)
+                list(APPEND _OPENCL_TARGET_DEVICES ACC)
+            else()
+                message(STATUS "Skip sample ${SAMPLE_CATEGORY}/${SAMPLE_NAME}_OpenCL_ACC (OpenCL ACC disabled)")
+            endif()
         endif()
 
         foreach(_TARGET_DEVICE IN LISTS _OPENCL_TARGET_DEVICES)
