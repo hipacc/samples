@@ -15,7 +15,7 @@
 // get time in milliseconds
 double time_ms() {
     auto time = std::chrono::system_clock::now().time_since_epoch();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(time).count();
+    return static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(time).count());
 }
 
 
