@@ -30,6 +30,8 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+file(STRINGS "${HIPACC_SAMPLES_DIR}/common/config/common.conf" _COMMON_CONFIG_FILE NEWLINE_CONSUME)
+
 macro(add_hipacc_sample_dsl)
 
     set(options HIDE)
@@ -130,7 +132,7 @@ macro(add_hipacc_sample_cpu)
 
         string(TOLOWER ${_TARGET_IS} _TARGET_IS_LOW)
         file(STRINGS "${HIPACC_SAMPLES_DIR}/common/config/cpu-${_TARGET_IS_LOW}.conf" _CONFIG_FILE NEWLINE_CONSUME)
-        string(REPLACE "\n" ";" _CONFIG_FILE ${_CONFIG_FILE})
+        string(REPLACE "\n" ";" _CONFIG_FILE ${_COMMON_CONFIG_FILE} ${_CONFIG_FILE})
 
         add_hipacc_sources(TARGET ${PROJECT_NAME} PRIVATE
                         TARGET_ARCH CPU
@@ -202,7 +204,7 @@ macro(add_hipacc_sample_cuda)
         add_executable(${PROJECT_NAME})
                             
         file(STRINGS "${HIPACC_SAMPLES_DIR}/common/config/cuda.conf" _CONFIG_FILE NEWLINE_CONSUME)
-        string(REPLACE "\n" ";" _CONFIG_FILE ${_CONFIG_FILE})
+        string(REPLACE "\n" ";" _CONFIG_FILE ${_COMMON_CONFIG_FILE} ${_CONFIG_FILE})
     
         add_hipacc_sources(TARGET ${PROJECT_NAME} PRIVATE
                            TARGET_ARCH CUDA 
@@ -290,7 +292,7 @@ macro(add_hipacc_sample_opencl)
 
             string(TOLOWER ${_TARGET_DEVICE} _TARGET_DEVICE_LOW)
             file(STRINGS "${HIPACC_SAMPLES_DIR}/common/config/opencl-${_TARGET_DEVICE_LOW}.conf" _CONFIG_FILE NEWLINE_CONSUME)
-            string(REPLACE "\n" ";" _CONFIG_FILE ${_CONFIG_FILE})
+            string(REPLACE "\n" ";" _CONFIG_FILE ${_COMMON_CONFIG_FILE} ${_CONFIG_FILE})
         
             add_hipacc_sources(TARGET ${PROJECT_NAME} PRIVATE
                                TARGET_ARCH OPENCL-${_TARGET_DEVICE}
