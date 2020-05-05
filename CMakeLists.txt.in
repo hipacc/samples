@@ -314,6 +314,8 @@ macro(add_hipacc_sample_opencl)
                         WORKING_DIRECTORY ${_HIPACC_OUTPUT_DIR})
             endif()
 
+            target_compile_options(${PROJECT_NAME} PRIVATE
+              -DCL_TARGET_OPENCL_VERSION=${OpenCL_VERSION_MAJOR}${OpenCL_VERSION_MINOR}0)
             set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${SAMPLE_CATEGORY})
             target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)   
                                             
