@@ -6,6 +6,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <vector>
+#include <type_traits>
 
 #ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>
@@ -80,10 +81,10 @@ T* load_data(const unsigned int width, const unsigned int height,
 
     // random data, channels will be ignored
     for (unsigned int p = 0; p < width * height; ++p) {
-        if (std::is_same<T,float>::value) {
-            data[p] = ((T)std::rand())/RAND_MAX;
+        if (std::is_floating_point<T>::value) {
+            data[p] = static_cast<T>(std::rand())/RAND_MAX;
         } else {
-            data[p] = (std::rand())%256;
+            data[p] = static_cast<T>(std::rand()%256);
         }
     }
 
