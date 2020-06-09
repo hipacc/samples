@@ -207,7 +207,6 @@ HIPACC_CODEGEN int main(int argc, const char **argv) {
   Image<uchar> out(width, height);
   Image<short> dx(width, height);
   Image<short> dy(width, height);
-  Image<short> dxy(width, height);
   Image<short> sx(width, height);
   Image<short> sy(width, height);
   Image<short> sxy(width, height);
@@ -267,7 +266,6 @@ HIPACC_CODEGEN int main(int argc, const char **argv) {
   gaussy.execute();
   timing += hipacc_last_kernel_timing();
 
-  IterationSpace<short> iter_dxy(dxy);
   BoundaryCondition<short> bound_sxy(sxy, maskxy, Boundary::CLAMP);
   Accessor<short> acc_sxy(bound_sxy);
   IterationSpace<short> iter_gxy(gxy);
