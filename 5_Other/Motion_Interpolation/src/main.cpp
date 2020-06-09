@@ -459,7 +459,7 @@ HIPACC_CODEGEN int main(int argc, const char **argv) {
     Accessor<float4> acc_merged_vec(merged_vec, Interpolate::NN);
     BoundaryCondition<uchar4> bound_asm_in1(in1, dom, Boundary::CLAMP);
     Accessor<uchar4> acc_asm_in1(bound_asm_in1);
-    Assemble assemble(iter_out, acc_in1, acc_merged_vec);
+    Assemble assemble(iter_out, acc_asm_in1, acc_merged_vec);
     assemble.execute();
     timing += hipacc_last_kernel_timing();
 
